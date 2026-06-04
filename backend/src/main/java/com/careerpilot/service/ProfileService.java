@@ -1,10 +1,11 @@
 package com.careerpilot.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.careerpilot.entity.Profile;
 import com.careerpilot.repository.ProfileRepository;
-
 @Service
 public class ProfileService {
 
@@ -20,7 +21,10 @@ public class ProfileService {
     public Profile getProfile(Long id) {
     return profileRepository.findById(id)
             .orElseThrow(() ->
-                    new RuntimeException("Profile not found"));
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Profile not found"
+                    ));
 }
     public void deleteProfile(Long id) {
     profileRepository.deleteById(id);
