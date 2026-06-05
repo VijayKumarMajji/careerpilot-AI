@@ -1,5 +1,6 @@
 package com.careerpilot.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,17 +15,13 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String fileName;
 
-    private String skills;
+    @Column(columnDefinition = "TEXT")
+    private String resumeText;
 
-    private String experience;
-
-    private String education;
-
-    private String resumeUrl;
-
-    // Getters and Setters
+    public Resume() {
+    }
 
     public Long getId() {
         return id;
@@ -34,43 +31,19 @@ public class Resume {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getSkills() {
-        return skills;
+    public String getResumeText() {
+        return resumeText;
     }
 
-    public void setSkills(String skills) {
-        this.skills = skills;
-    }
-
-    public String getExperience() {
-        return experience;
-    }
-
-    public void setExperience(String experience) {
-        this.experience = experience;
-    }
-
-    public String getEducation() {
-        return education;
-    }
-
-    public void setEducation(String education) {
-        this.education = education;
-    }
-
-    public String getResumeUrl() {
-        return resumeUrl;
-    }
-
-    public void setResumeUrl(String resumeUrl) {
-        this.resumeUrl = resumeUrl;
+    public void setResumeText(String resumeText) {
+        this.resumeText = resumeText;
     }
 }
