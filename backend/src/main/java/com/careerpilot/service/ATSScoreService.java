@@ -2,60 +2,72 @@ package com.careerpilot.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
+
+import com.careerpilot.dto.ATSScoreResponse;
+import com.careerpilot.entity.Resume;
 
 @Service
 public class ATSScoreService {
 
+    private final ResumeService resumeService;
     private final SkillExtractionService skillExtractionService;
 
     public ATSScoreService(
+            ResumeService resumeService,
             SkillExtractionService skillExtractionService) {
 
-        this.skillExtractionService =
-                skillExtractionService;
+        this.resumeService = resumeService;
+        this.skillExtractionService = skillExtractionService;
     }
 
-    public Map<String, Object> calculateScore(
-            String resumeText) {
+    public ATSScoreResponse calculateScore(Long resumeId) {
+
+        Resume resume =
+                resumeService.getResume(resumeId);
 
         List<String> skills =
-                skillExtractionService
-                        .extractSkills(resumeText);
+                skillExtractionService.extractSkills(
+                        resume.getResumeText());
 
-        int score = 40;
+        int score = 50;
 
-        score += Math.min(skills.size() * 5, 50);
+        score += Math.min(skills.size() * 3, 40);
 
-        List<String> suggestions =
+        List<String> missingKeywords =
                 new ArrayList<>();
 
-        if (!skills.contains("java")) {
-            suggestions.add("Add Java");
+        List<String> recommendations =
+                new ArrayList<>();
+
+        List<String> importantSkills = List.of(
+                "AWS",
+                "Docker",
+                "Microservices",
+                "Spring Boot",
+                "REST API",
+                "Kubernetes"
+        );
+
+        for (String skill : importantSkills) {
+
+            if (!skills.contains(skill)) {
+
+                missingKeywords.add(skill);
+
+                recommendations.add(
+                        "Add experience with " + skill);
+            }
         }
 
-        if (!skills.contains("spring boot")) {
-            suggestions.add("Add Spring Boot");
-        }
+        score = Math.min(score, 100);
 
-        if (!skills.contains("docker")) {
-            suggestions.add("Add Docker");
-        }
-
-        if (!skills.contains("aws")) {
-            suggestions.add("Add AWS");
-        }
-
-        if (!skills.contains("postgresql")) {
-            suggestions.add("Add PostgreSQL");
-        }
-
-        return Map.of(
-                "atsScore", score,
-                "detectedSkills", skills,
-                "suggestions", suggestions
+        return new ATSScoreResponse(
+                score,
+                skills,
+                missingKeywords,
+                recommendations
         );
     }
 }

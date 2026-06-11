@@ -53,7 +53,8 @@ public class ResumeUploadController {
                 resumeParserService.extractText(filePath);
 
         List<String> skills =
-                skillExtractionService.extractSkills(extractedText);
+                skillExtractionService.extractSkills(
+                        extractedText);
 
         int score =
                 resumeScoreService.calculateScore(
@@ -62,18 +63,29 @@ public class ResumeUploadController {
 
         Resume resume = new Resume();
 
-        resume.setFileName(file.getOriginalFilename());
-        resume.setResumeText(extractedText);
+        resume.setFileName(
+                file.getOriginalFilename());
+
+        resume.setResumeText(
+                extractedText);
+
+        resume.setAtsScore(
+                score);
+
+        resume.setSkills(
+                String.join(",", skills));
 
         Resume savedResume =
-                resumeService.saveResume(resume);
+                resumeService.saveResume(
+                        resume);
 
         return Map.of(
                 "id", savedResume.getId(),
                 "fileName", savedResume.getFileName(),
                 "skills", skills,
                 "score", score,
-                "message", "Resume uploaded and analyzed successfully"
+                "message",
+                "Resume uploaded and analyzed successfully"
         );
     }
 }
